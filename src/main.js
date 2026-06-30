@@ -82,7 +82,10 @@ const state = {
  * ------------------------------------------------------------------ */
 
 const globeEl = document.getElementById('globe');
-const world = new Globe(globeEl, { animateIn: true })
+const world = new Globe(globeEl, {
+  animateIn: true,
+  rendererConfig: { antialias: true, powerPreference: 'high-performance' },
+})
   .backgroundColor('rgba(4, 7, 14, 1)')
   .showGlobe(true)
   .showAtmosphere(true)
@@ -104,23 +107,48 @@ world.globeMaterial().emissive.set('#06101f');
 world.globeMaterial().emissiveIntensity = 0.35;
 world.globeMaterial().shininess = 8;
 
-// Gentle auto-rotate until the user interacts.
+// Gentle auto-rotate until the user interacts; damping keeps drag/zoom smooth.
 const controls = world.controls();
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.45;
-controls.minDistance = 180;
-controls.maxDistance = 600;
+controls.autoRotateSpeed = 0.42;
+controls.enableDamping = true;
+controls.dampingFactor = 0.09;
+controls.rotateSpeed = 0.55;
+controls.zoomSpeed = 0.8;
+controls.minDistance = 170;
+controls.maxDistance = 620;
 ['mousedown', 'touchstart', 'wheel'].forEach((ev) =>
   globeEl.addEventListener(ev, () => { controls.autoRotate = false; }, { passive: true })
 );
 
-world.pointOfView({ lat: 20, lng: 10, altitude: 2.5 }, 0);
+// Render at the device's true resolution (capped for performance) so the
+// globe and country borders stay crisp on high-DPI / retina phones.
+function applyPixelRatio() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  world.renderer().setPixelRatio(dpr);
+}
+applyPixelRatio();
+
+// On a tall, narrow phone the globe needs to sit a little further back so the
+// whole sphere is comfortably in frame.
+function initialAltitude() {
+  const aspect = window.innerWidth / window.innerHeight;
+  return aspect < 0.7 ? 2.9 : aspect < 1 ? 2.6 : 2.4;
+}
+world.pointOfView({ lat: 20, lng: 10, altitude: initialAltitude() }, 0);
 
 function sizeGlobe() {
-  world.width(window.innerWidth).height(window.innerHeight);
+  // visualViewport tracks the real visible area as mobile browser chrome
+  // (URL bar) shows/hides, avoiding letterboxing or clipping.
+  const vw = window.visualViewport?.width || window.innerWidth;
+  const vh = window.visualViewport?.height || window.innerHeight;
+  world.width(vw).height(vh);
+  applyPixelRatio();
 }
 sizeGlobe();
 window.addEventListener('resize', sizeGlobe);
+window.addEventListener('orientationchange', () => setTimeout(sizeGlobe, 250));
+window.visualViewport?.addEventListener('resize', sizeGlobe);
 
 // Hide the loader once the first frame is up.
 requestAnimationFrame(() => {
