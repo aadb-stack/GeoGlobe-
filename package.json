@@ -12,8 +12,5 @@
   "dependencies": {
     "globe.gl": "^2.46.1",
     "vite": "^8.1.0"
-  },
-  "devDependencies": {
-    "playwright": "^1.61.1"
   }
 }
