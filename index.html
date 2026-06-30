@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="GeoGlobe — explore countries on an interactive 3D globe. Click any country for GDP, HDI, military strength, inflation and recent news, and compare two nations side by side."
+    />
+    <title>GeoGlobe · Interactive Country Data Explorer</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌍%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <!-- 3D globe canvas mounts here -->
+    <div id="globe"></div>
+
+    <!-- Top toolbar -->
+    <header id="topbar">
+      <div class="brand">
+        <span class="brand-mark">🌍</span>
+        <div class="brand-text">
+          <h1>GeoGlobe</h1>
+          <p>Click a country to explore its data</p>
+        </div>
+      </div>
+
+      <div class="toolbar-controls">
+        <div class="search-wrap">
+          <input
+            id="search"
+            type="search"
+            placeholder="Search a country…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <ul id="search-results" class="search-results" hidden></ul>
+        </div>
+
+        <label class="select-wrap" title="Color the globe by a metric">
+          <span>Color by</span>
+          <select id="color-by">
+            <option value="none">None</option>
+            <option value="gdp">GDP</option>
+            <option value="gdpPerCapita">GDP per capita</option>
+            <option value="population">Population</option>
+            <option value="hdi">HDI</option>
+            <option value="militaryRank">Military rank</option>
+            <option value="inflation">Inflation</option>
+          </select>
+        </label>
+
+        <button id="compare-toggle" class="btn" type="button">
+          <span class="cmp-icon">⚖️</span> Compare
+        </button>
+      </div>
+    </header>
+
+    <!-- Color legend (shown when "Color by" is active) -->
+    <div id="legend" class="legend" hidden>
+      <span id="legend-label" class="legend-label"></span>
+      <div class="legend-bar"><span id="legend-min"></span><span id="legend-max"></span></div>
+    </div>
+
+    <!-- Compare tray: shows the slot(s) being picked -->
+    <div id="compare-tray" class="compare-tray" hidden>
+      <span class="tray-hint">Compare mode — pick two countries on the globe</span>
+      <div class="tray-slots">
+        <button class="tray-slot" data-slot="0" type="button"><span class="slot-flag">＋</span><span class="slot-name">Country A</span></button>
+        <span class="tray-vs">vs</span>
+        <button class="tray-slot" data-slot="1" type="button"><span class="slot-flag">＋</span><span class="slot-name">Country B</span></button>
+      </div>
+      <button id="compare-run" class="btn btn-primary" type="button" disabled>Compare →</button>
+      <button id="compare-exit" class="btn btn-ghost" type="button">Exit</button>
+    </div>
+
+    <!-- Country info panel -->
+    <aside id="panel" class="panel" hidden></aside>
+
+    <!-- Comparison modal -->
+    <div id="compare-modal" class="modal" hidden>
+      <div class="modal-backdrop"></div>
+      <div id="compare-card" class="modal-card"></div>
+    </div>
+
+    <!-- Loading splash -->
+    <div id="loader" class="loader">
+      <div class="loader-globe">🌍</div>
+      <p>Building the globe…</p>
+    </div>
+
+    <footer id="footnote">
+      Figures are approximate (≈2023–2024 estimates) for educational use · Drag to rotate · Scroll to zoom
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

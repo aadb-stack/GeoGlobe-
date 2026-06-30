@@ -1,0 +1,19 @@
+{
+  "name": "geoglobe",
+  "version": "1.0.0",
+  "description": "Interactive 3D globe explorer for country geopolitical data with a comparison tool.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "globe.gl": "^2.46.1",
+    "vite": "^8.1.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}
